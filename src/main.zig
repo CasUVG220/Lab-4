@@ -27,6 +27,7 @@ pub fn main(init: std.process.Init) !void {
 
     const args = try init.minimal.args.toSlice(gpa);
     const path = if (args.len > 1) args[1] else "model.obj";
+    const out_path = if (args.len > 2) args[2] else "out.png";
 
     const text = try std.Io.Dir.cwd().readFileAlloc(io, path, gpa, .limited(64 * 1024 * 1024));
     const model = try obj.parse(gpa, text);
@@ -62,6 +63,6 @@ pub fn main(init: std.process.Init) !void {
         canvas.drawLine(c, a, WHITE);
     }
 
-    try png.writePng(gpa, io, "out.png", WIDTH, HEIGHT, canvas.pixels);
-    std.log.info("{s}: {d} vertices, {d} caras -> out.png", .{ path, model.vertices.len, model.faces.len });
+    try png.writePng(gpa, io, out_path, WIDTH, HEIGHT, canvas.pixels);
+    std.log.info("{s}: {d} vertices, {d} caras -> {s}", .{ path, model.vertices.len, model.faces.len, out_path });
 }
